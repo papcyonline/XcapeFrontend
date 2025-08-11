@@ -1,11 +1,11 @@
 1:HL["/_next/static/css/1cdaa9b8760cfe34.css","style",{"crossOrigin":""}]
-0:["gYpX4NbodzQpnCLWEgbDn",[[["",{"children":["(dashboard)",{"children":["analytics",{"children":["__PAGE__",{}]}]}]},"$undefined","$undefined",true],"$L2",[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/1cdaa9b8760cfe34.css","precedence":"next","crossOrigin":""}]],"$L3"]]]]
+0:["TGC8nG3VLQzOpHEf4sN_3",[[["",{"children":["(dashboard)",{"children":["analytics",{"children":["__PAGE__",{}]}]}]},"$undefined","$undefined",true],"$L2",[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/1cdaa9b8760cfe34.css","precedence":"next","crossOrigin":""}]],"$L3"]]]]
 4:I[31202,["185","static/chunks/app/layout-b8aa02cd7b6e2f58.js"],"ThemeProvider"]
 5:I[56954,[],""]
 6:I[7264,[],""]
-7:I[66573,["737","static/chunks/737-85b1137fb009053d.js","396","static/chunks/396-cff8a53686edb875.js","166","static/chunks/166-f8fc0dc61d5d19fc.js","187","static/chunks/187-8cca00e46e62543f.js","18","static/chunks/18-df9cac2b03466cc9.js","642","static/chunks/app/(dashboard)/layout-59a5d7f74f6fec5e.js"],""]
+7:I[66573,["737","static/chunks/737-85b1137fb009053d.js","396","static/chunks/396-cff8a53686edb875.js","166","static/chunks/166-f8fc0dc61d5d19fc.js","187","static/chunks/187-8cca00e46e62543f.js","18","static/chunks/18-df9cac2b03466cc9.js","642","static/chunks/app/(dashboard)/layout-cfc9110492a6872d.js"],""]
 d:I[48297,[],""]
-e:I[82843,["737","static/chunks/737-85b1137fb009053d.js","818","static/chunks/818-18b46c8495b86337.js","302","static/chunks/app/(dashboard)/analytics/page-a66ed3915ac9bb26.js"],""]
+e:I[82843,["737","static/chunks/737-85b1137fb009053d.js","818","static/chunks/818-18b46c8495b86337.js","302","static/chunks/app/(dashboard)/analytics/page-b1d138e0fa5986d5.js"],""]
 8:{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"}
 9:{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"}
 a:{"display":"inline-block"}
