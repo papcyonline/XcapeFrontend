@@ -1,8 +1,19 @@
 {
+  "/_not-found": "app/_not-found.js",
+  "/page": "app/page.js",
+  "/test/page": "app/test/page.js",
+  "/(auth)/callback/page": "app/(auth)/callback/page.js",
+  "/(auth)/reset-password/page": "app/(auth)/reset-password/page.js",
+  "/(auth)/login/page": "app/(auth)/login/page.js",
+  "/(auth)/forgot-password/page": "app/(auth)/forgot-password/page.js",
   "/(dashboard)/dashboard/page": "app/(dashboard)/dashboard/page.js",
-  "/(dashboard)/generate/page": "app/(dashboard)/generate/page.js",
-  "/(dashboard)/leads/page": "app/(dashboard)/leads/page.js",
-  "/(dashboard)/analytics/page": "app/(dashboard)/analytics/page.js",
+  "/(auth)/register/page": "app/(auth)/register/page.js",
   "/(dashboard)/campaigns/page": "app/(dashboard)/campaigns/page.js",
-  "/(dashboard)/settings/page": "app/(dashboard)/settings/page.js"
+  "/(dashboard)/analytics/page": "app/(dashboard)/analytics/page.js",
+  "/(dashboard)/pricing/page": "app/(dashboard)/pricing/page.js",
+  "/(dashboard)/generate/page": "app/(dashboard)/generate/page.js",
+  "/(dashboard)/settings/page": "app/(dashboard)/settings/page.js",
+  "/(dashboard)/import-export/page": "app/(dashboard)/import-export/page.js",
+  "/(dashboard)/leads/page": "app/(dashboard)/leads/page.js",
+  "/(dashboard)/tags/page": "app/(dashboard)/tags/page.js"
 }

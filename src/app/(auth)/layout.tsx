@@ -1,3 +1,4 @@
+// src/app/(auth)/layout.tsx
 import { ThemeToggle } from '@/components/layout/theme-toggle'
 
 export default function AuthLayout({

@@ -106,20 +106,28 @@ export default function ConversationalLeadAgent() {
     }
   }
 
-  const updateLastAgentMessage = (content: string) => {
-    setMessages((prev: Message[]) => {
-      const newMessages = [...prev]
-      const lastAgentIndex = newMessages.findLastIndex(msg => msg.role === 'agent')
-      if (lastAgentIndex !== -1) {
-        newMessages[lastAgentIndex] = {
-          ...newMessages[lastAgentIndex],
-          content,
-          timestamp: new Date()
-        }
+const updateLastAgentMessage = (content: string) => {
+  setMessages((prev: Message[]) => {
+    const newMessages = [...prev]
+    // Find the last agent message by iterating backwards
+    let lastAgentIndex = -1
+    for (let i = newMessages.length - 1; i >= 0; i--) {
+      if (newMessages[i].role === 'agent') {
+        lastAgentIndex = i
+        break
       }
-      return newMessages
-    })
-  }
+    }
+    
+    if (lastAgentIndex !== -1) {
+      newMessages[lastAgentIndex] = {
+        ...newMessages[lastAgentIndex],
+        content,
+        timestamp: new Date()
+      }
+    }
+    return newMessages
+  })
+}
 
   const addUserMessage = (content: string) => {
     setMessages((prev: Message[]) => [...prev, {
