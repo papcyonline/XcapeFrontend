@@ -1,11 +1,11 @@
 1:HL["/_next/static/css/1cdaa9b8760cfe34.css","style",{"crossOrigin":""}]
-0:["tV5CuC90mBqMRBQOE1gia",[[["",{"children":["(dashboard)",{"children":["settings",{"children":["__PAGE__",{}]}]}]},"$undefined","$undefined",true],"$L2",[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/1cdaa9b8760cfe34.css","precedence":"next","crossOrigin":""}]],"$L3"]]]]
+0:["gYpX4NbodzQpnCLWEgbDn",[[["",{"children":["(dashboard)",{"children":["settings",{"children":["__PAGE__",{}]}]}]},"$undefined","$undefined",true],"$L2",[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/1cdaa9b8760cfe34.css","precedence":"next","crossOrigin":""}]],"$L3"]]]]
 4:I[31202,["185","static/chunks/app/layout-b8aa02cd7b6e2f58.js"],"ThemeProvider"]
 5:I[56954,[],""]
 6:I[7264,[],""]
-7:I[66573,["737","static/chunks/737-85b1137fb009053d.js","396","static/chunks/396-cff8a53686edb875.js","166","static/chunks/166-f8fc0dc61d5d19fc.js","187","static/chunks/187-8cca00e46e62543f.js","18","static/chunks/18-df9cac2b03466cc9.js","642","static/chunks/app/(dashboard)/layout-de352d93ddc74a22.js"],""]
+7:I[66573,["737","static/chunks/737-85b1137fb009053d.js","396","static/chunks/396-cff8a53686edb875.js","166","static/chunks/166-f8fc0dc61d5d19fc.js","187","static/chunks/187-8cca00e46e62543f.js","18","static/chunks/18-df9cac2b03466cc9.js","642","static/chunks/app/(dashboard)/layout-59a5d7f74f6fec5e.js"],""]
 d:I[48297,[],""]
-e:I[40796,["737","static/chunks/737-85b1137fb009053d.js","166","static/chunks/166-f8fc0dc61d5d19fc.js","492","static/chunks/492-eae1c8469cbcc280.js","724","static/chunks/app/(dashboard)/settings/page-f45b820b19a6407f.js"],""]
+e:I[40796,["737","static/chunks/737-85b1137fb009053d.js","166","static/chunks/166-f8fc0dc61d5d19fc.js","492","static/chunks/492-eae1c8469cbcc280.js","724","static/chunks/app/(dashboard)/settings/page-bf0fc0148b40ddf3.js"],""]
 8:{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"}
 9:{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"}
 a:{"display":"inline-block"}
