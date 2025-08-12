@@ -54,7 +54,7 @@ export function LeadDetailsModal({ lead, isOpen, onClose, editMode = false, onSa
   if (!isOpen) return null
 
   const handleInputChange = (field: string, value: any) => {
-    setFormData(prev => ({
+    setFormData((prev: any) => ({
       ...prev,
       [field]: value
     }))
@@ -381,7 +381,7 @@ export function LeadDetailsModal({ lead, isOpen, onClose, editMode = false, onSa
                 </select>
               ) : (
                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusColors[formData.contact_status as keyof typeof statusColors] || statusColors.not_contacted}`}>
-                  {formData.contact_status ? formData.contact_status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not Contacted'}
+                  {formData.contact_status ? formData.contact_status.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) : 'Not Contacted'}
                 </span>
               )}
             </div>
