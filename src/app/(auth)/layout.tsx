@@ -1,7 +1,7 @@
 // src/app/(auth)/layout.tsx
 import { ThemeToggle } from '@/components/layout/theme-toggle'
 import Image from 'next/image'
-import logo from '@/../public/logo.png'
+import logo from '@/../public/Logo.png'
 
 export default function AuthLayout({
   children,
