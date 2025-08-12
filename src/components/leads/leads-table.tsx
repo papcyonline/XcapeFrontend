@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { leadsApi } from '@/lib/api'
+import { LeadDetailsModal } from './lead-details-modal'
 
 const statusColors = {
   not_contacted: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
@@ -45,6 +46,11 @@ export function LeadsTable() {
   const [selectedLeads, setSelectedLeads] = useState<string[]>([])
   const [sortField, setSortField] = useState<string>('created_at')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
+  
+  // Modal states
+  const [selectedLead, setSelectedLead] = useState<any>(null)
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
 
   useEffect(() => {
     loadLeads()
@@ -147,6 +153,45 @@ export function LeadsTable() {
     }
   }
 
+  // Action handlers
+  const handleViewDetails = (lead: any) => {
+    setSelectedLead(lead)
+    setShowDetailsModal(true)
+  }
+
+  const handleEditLead = (lead: any) => {
+    setSelectedLead(lead)
+    setShowEditModal(true)
+  }
+
+  const handleSendEmail = (lead: any) => {
+    if (!lead.email) {
+      alert('No email address available for this lead')
+      return
+    }
+    
+    // Create email compose URL with pre-filled subject and body
+    const subject = `Regarding ${lead.company_name || 'Your Business'}`
+    const body = `Hi ${lead.name || 'there'},\n\nI hope this email finds you well. I wanted to reach out regarding your business at ${lead.company_name || 'your company'}.\n\nBest regards,\n[Your Name]`
+    
+    const mailtoUrl = `mailto:${lead.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+    window.open(mailtoUrl, '_blank')
+  }
+
+  const handleLeadUpdate = (updatedLead: any) => {
+    setLeads(prev => prev.map(lead => 
+      lead.id === updatedLead.id ? updatedLead : lead
+    ))
+    setShowEditModal(false)
+    setSelectedLead(null)
+  }
+
+  const handleModalClose = () => {
+    setShowDetailsModal(false)
+    setShowEditModal(false)
+    setSelectedLead(null)
+  }
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -176,254 +221,290 @@ export function LeadsTable() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Leads</h2>
-          <p className="text-gray-600 dark:text-gray-300">
-            {filteredLeads.length} contactable leads (from {leads.length} total)
-          </p>
+    <>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Leads</h2>
+            <p className="text-gray-600 dark:text-gray-300">
+              {filteredLeads.length} contactable leads (from {leads.length} total)
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <button 
+              onClick={loadLeads}
+              className="flex items-center gap-2 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+            >
+              🔄 Refresh
+            </button>
+            <button className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+              <Download className="h-4 w-4" />
+              Export
+            </button>
+            <Link
+              href="/generate"
+              className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+            >
+              Generate More
+            </Link>
+          </div>
         </div>
-        <div className="flex gap-3">
-          <button 
-            onClick={loadLeads}
-            className="flex items-center gap-2 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
-          >
-            🔄 Refresh
-          </button>
-          <button className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-            <Download className="h-4 w-4" />
-            Export
-          </button>
-          <Link
-            href="/generate"
-            className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
-          >
-            Generate More
-          </Link>
-        </div>
-      </div>
 
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search leads..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-            />
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search leads..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+              />
+            </div>
+
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+            >
+              <option value="all">All Statuses</option>
+              <option value="not_contacted">Not Contacted</option>
+              <option value="contacted">Contacted</option>
+              <option value="qualified">Qualified</option>
+              <option value="unqualified">Unqualified</option>
+              <option value="converted">Converted</option>
+            </select>
+
+            <select
+              value={industryFilter}
+              onChange={(e) => setIndustryFilter(e.target.value)}
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+            >
+              <option value="all">All Industries</option>
+              {industries.map(industry => (
+                <option key={industry} value={industry}>{industry}</option>
+              ))}
+            </select>
+
+            {selectedLeads.length > 0 && (
+              <div className="flex gap-2">
+                <button className="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                  <Tag className="h-4 w-4" />
+                  Tag ({selectedLeads.length})
+                </button>
+                <button className="flex items-center gap-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-3 py-2 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors">
+                  <Trash2 className="h-4 w-4" />
+                  Delete
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 dark:bg-gray-700/50">
+                <tr>
+                  <th className="px-6 py-4 text-left">
+                    <input
+                      type="checkbox"
+                      checked={selectedLeads.length === filteredLeads.length && filteredLeads.length > 0}
+                      onChange={selectAllLeads}
+                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    />
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white cursor-pointer" onClick={() => handleSort('company_name')}>
+                    <div className="flex items-center gap-2">
+                      Company
+                      {sortField === 'company_name' && <ChevronDown className={`h-4 w-4 transform ${sortDirection === 'asc' ? 'rotate-180' : ''}`} />}
+                    </div>
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">Location</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">Website</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">Contact</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white cursor-pointer" onClick={() => handleSort('lead_score')}>
+                    <div className="flex items-center gap-2">
+                      Score
+                      {sortField === 'lead_score' && <ChevronDown className={`h-4 w-4 transform ${sortDirection === 'asc' ? 'rotate-180' : ''}`} />}
+                    </div>
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">Status</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white cursor-pointer" onClick={() => handleSort('created_at')}>
+                    <div className="flex items-center gap-2">
+                      Created
+                      {sortField === 'created_at' && <ChevronDown className={`h-4 w-4 transform ${sortDirection === 'asc' ? 'rotate-180' : ''}`} />}
+                    </div>
+                  </th>
+                  <th className="px-6 py-4 text-right text-sm font-semibold text-gray-900 dark:text-white">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                {filteredLeads.map((lead) => (
+                  <tr key={lead.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <td className="px-6 py-4">
+                      <input
+                        type="checkbox"
+                        checked={selectedLeads.includes(lead.id)}
+                        onChange={() => toggleLeadSelection(lead.id)}
+                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div>
+                        <div className="font-medium text-gray-900 dark:text-white">{lead.company_name || 'No company'}</div>
+                        <div className="text-sm text-gray-500 dark:text-gray-400">{lead.industry || 'No industry'}</div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-gray-900 dark:text-white">{lead.city || 'No location'}</div>
+                    </td>
+                    <td className="px-6 py-4">
+                      {lead.website ? (
+                        <a href={lead.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-600 hover:underline text-sm">
+                          <ExternalLink className="h-3 w-3" />
+                          Visit
+                        </a>
+                      ) : (
+                        <span className="text-gray-400 text-sm">No website</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="space-y-1">
+                        {lead.email && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <Mail className="h-3 w-3 text-gray-400" />
+                            <a href={`mailto:${lead.email}`} className="text-blue-600 hover:underline">
+                              {lead.email}
+                            </a>
+                          </div>
+                        )}
+                        {lead.phone && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <Phone className="h-3 w-3 text-gray-400" />
+                            <a href={`tel:${lead.phone}`} className="text-gray-600 dark:text-gray-300">
+                              {lead.phone}
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
+                        <span className={`text-lg font-bold ${getScoreColor(lead.lead_score || 0)}`}>
+                          {lead.lead_score || 0}
+                        </span>
+                        <div className="flex">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`h-3 w-3 ${
+                                i < Math.floor((lead.lead_score || 0) / 20) 
+                                  ? 'text-yellow-400 fill-current' 
+                                  : 'text-gray-300'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <select
+                        value={lead.contact_status || 'not_contacted'}
+                        onChange={(e) => updateLeadStatus(lead.id, e.target.value)}
+                        className={`px-3 py-1 rounded-full text-xs font-medium border-0 ${statusColors[lead.contact_status as keyof typeof statusColors] || statusColors.not_contacted}`}
+                      >
+                        <option value="not_contacted">Not Contacted</option>
+                        <option value="contacted">Contacted</option>
+                        <option value="qualified">Qualified</option>
+                        <option value="unqualified">Unqualified</option>
+                        <option value="converted">Converted</option>
+                      </select>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                      {lead.created_at ? new Date(lead.created_at).toLocaleDateString() : 'No date'}
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center gap-2 justify-end">
+                        <button 
+                          onClick={() => handleViewDetails(lead)}
+                          className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
+                          title="View Details"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </button>
+                        <button 
+                          onClick={() => handleSendEmail(lead)}
+                          className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition-colors"
+                          title="Send Email"
+                          disabled={!lead.email}
+                        >
+                          <Mail className="h-4 w-4" />
+                        </button>
+                        <button 
+                          onClick={() => handleEditLead(lead)}
+                          className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                          title="Edit Lead"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </button>
+                        <button 
+                          onClick={() => deleteLead(lead.id)}
+                          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+                          title="Delete Lead"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
 
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-          >
-            <option value="all">All Statuses</option>
-            <option value="not_contacted">Not Contacted</option>
-            <option value="contacted">Contacted</option>
-            <option value="qualified">Qualified</option>
-            <option value="unqualified">Unqualified</option>
-            <option value="converted">Converted</option>
-          </select>
-
-          <select
-            value={industryFilter}
-            onChange={(e) => setIndustryFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-          >
-            <option value="all">All Industries</option>
-            {industries.map(industry => (
-              <option key={industry} value={industry}>{industry}</option>
-            ))}
-          </select>
-
-          {selectedLeads.length > 0 && (
-            <div className="flex gap-2">
-              <button className="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
-                <Tag className="h-4 w-4" />
-                Tag ({selectedLeads.length})
-              </button>
-              <button className="flex items-center gap-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-3 py-2 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors">
-                <Trash2 className="h-4 w-4" />
-                Delete
-              </button>
+          {filteredLeads.length === 0 && !loading && (
+            <div className="text-center py-12">
+              <div className="text-gray-400 mb-4">
+                <Search className="h-12 w-12 mx-auto" />
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No leads found</h3>
+              <p className="text-gray-500 dark:text-gray-400 mb-4">
+                {leads.length === 0 ? 'Start by generating some leads' : 'Try adjusting your search or filter criteria'}
+              </p>
+              {leads.length === 0 && (
+                <Link
+                  href="/generate"
+                  className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  ⚡ Generate Your First Leads
+                </Link>
+              )}
             </div>
           )}
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-gray-700/50">
-              <tr>
-                <th className="px-6 py-4 text-left">
-                  <input
-                    type="checkbox"
-                    checked={selectedLeads.length === filteredLeads.length && filteredLeads.length > 0}
-                    onChange={selectAllLeads}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  />
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white cursor-pointer" onClick={() => handleSort('company_name')}>
-                  <div className="flex items-center gap-2">
-                    Company
-                    {sortField === 'company_name' && <ChevronDown className={`h-4 w-4 transform ${sortDirection === 'asc' ? 'rotate-180' : ''}`} />}
-                  </div>
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">Location</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">Website</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">Contact</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white cursor-pointer" onClick={() => handleSort('lead_score')}>
-                  <div className="flex items-center gap-2">
-                    Score
-                    {sortField === 'lead_score' && <ChevronDown className={`h-4 w-4 transform ${sortDirection === 'asc' ? 'rotate-180' : ''}`} />}
-                  </div>
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">Status</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white cursor-pointer" onClick={() => handleSort('created_at')}>
-                  <div className="flex items-center gap-2">
-                    Created
-                    {sortField === 'created_at' && <ChevronDown className={`h-4 w-4 transform ${sortDirection === 'asc' ? 'rotate-180' : ''}`} />}
-                  </div>
-                </th>
-                <th className="px-6 py-4 text-right text-sm font-semibold text-gray-900 dark:text-white">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-              {filteredLeads.map((lead) => (
-                <tr key={lead.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                  <td className="px-6 py-4">
-                    <input
-                      type="checkbox"
-                      checked={selectedLeads.includes(lead.id)}
-                      onChange={() => toggleLeadSelection(lead.id)}
-                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
-                  </td>
-                  <td className="px-6 py-4">
-                    <div>
-                      <div className="font-medium text-gray-900 dark:text-white">{lead.company_name || 'No company'}</div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">{lead.industry || 'No industry'}</div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="text-sm text-gray-900 dark:text-white">{lead.city || 'No location'}</div>
-                  </td>
-                  <td className="px-6 py-4">
-                    {lead.website ? (
-                      <a href={lead.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-600 hover:underline text-sm">
-                        <ExternalLink className="h-3 w-3" />
-                        Visit
-                      </a>
-                    ) : (
-                      <span className="text-gray-400 text-sm">No website</span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="space-y-1">
-                      {lead.email && (
-                        <div className="flex items-center gap-2 text-sm">
-                          <Mail className="h-3 w-3 text-gray-400" />
-                          <a href={`mailto:${lead.email}`} className="text-blue-600 hover:underline">
-                            {lead.email}
-                          </a>
-                        </div>
-                      )}
-                      {lead.phone && (
-                        <div className="flex items-center gap-2 text-sm">
-                          <Phone className="h-3 w-3 text-gray-400" />
-                          <a href={`tel:${lead.phone}`} className="text-gray-600 dark:text-gray-300">
-                            {lead.phone}
-                          </a>
-                        </div>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
-                      <span className={`text-lg font-bold ${getScoreColor(lead.lead_score || 0)}`}>
-                        {lead.lead_score || 0}
-                      </span>
-                      <div className="flex">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`h-3 w-3 ${
-                              i < Math.floor((lead.lead_score || 0) / 20) 
-                                ? 'text-yellow-400 fill-current' 
-                                : 'text-gray-300'
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <select
-                      value={lead.contact_status || 'not_contacted'}
-                      onChange={(e) => updateLeadStatus(lead.id, e.target.value)}
-                      className={`px-3 py-1 rounded-full text-xs font-medium border-0 ${statusColors[lead.contact_status as keyof typeof statusColors] || statusColors.not_contacted}`}
-                    >
-                      <option value="not_contacted">Not Contacted</option>
-                      <option value="contacted">Contacted</option>
-                      <option value="qualified">Qualified</option>
-                      <option value="unqualified">Unqualified</option>
-                      <option value="converted">Converted</option>
-                    </select>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                    {lead.created_at ? new Date(lead.created_at).toLocaleDateString() : 'No date'}
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex items-center gap-2 justify-end">
-                      <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors">
-                        <Eye className="h-4 w-4" />
-                      </button>
-                      <button className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition-colors">
-                        <Mail className="h-4 w-4" />
-                      </button>
-                      <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors">
-                        <Edit className="h-4 w-4" />
-                      </button>
-                      <button 
-                        onClick={() => deleteLead(lead.id)}
-                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      {/* Lead Details Modal */}
+      {showDetailsModal && selectedLead && (
+        <LeadDetailsModal
+          lead={selectedLead}
+          isOpen={showDetailsModal}
+          onClose={handleModalClose}
+        />
+      )}
 
-        {filteredLeads.length === 0 && !loading && (
-          <div className="text-center py-12">
-            <div className="text-gray-400 mb-4">
-              <Search className="h-12 w-12 mx-auto" />
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No leads found</h3>
-            <p className="text-gray-500 dark:text-gray-400 mb-4">
-              {leads.length === 0 ? 'Start by generating some leads' : 'Try adjusting your search or filter criteria'}
-            </p>
-            {leads.length === 0 && (
-              <Link
-                href="/generate"
-                className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                ⚡ Generate Your First Leads
-              </Link>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
+      {/* Lead Edit Modal - You'll need to create this component or use existing edit functionality */}
+      {showEditModal && selectedLead && (
+        <LeadDetailsModal
+          lead={selectedLead}
+          isOpen={showEditModal}
+          onClose={handleModalClose}
+          editMode={true}
+          onSave={handleLeadUpdate}
+        />
+      )}
+    </>
   )
 }

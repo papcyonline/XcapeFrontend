@@ -7,7 +7,7 @@ import type {
  Lead
 } from '@/types'
 
-const API_URL = 'https://xcape.onrender.com'
+const API_URL = 'http://192.168.1.231:9876'
 
 export const api = axios.create({
  baseURL: API_URL,

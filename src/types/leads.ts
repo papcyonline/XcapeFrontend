@@ -1,3 +1,4 @@
+// src/types/leads.ts
 export interface Lead {
   id: string
   name: string
